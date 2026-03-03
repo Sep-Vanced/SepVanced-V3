@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const contacts = [
   { label: "GitHub", value: "github.com/Sep-Vanced", href: "https://github.com/Sep-Vanced", icon: Github },
-  { label: "Email", value: "joseph@example.com", href: "mailto:joseph@example.com", icon: Mail },
+  { label: "Email", value: "josephmangubat87@gmail.com", href: "mailto:josephmangubat87@gmail.com", icon: Mail },
   { label: "LinkedIn", value: "linkedin.com/in/sep-vanced-598313381", href: "https://www.linkedin.com/in/sep-vanced-598313381/", icon: Linkedin },
 ];
 
