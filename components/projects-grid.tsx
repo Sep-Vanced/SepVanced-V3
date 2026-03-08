@@ -39,8 +39,26 @@ function normalizeProjectName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function repoNameToVercelSlug(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function getDemoUrl(repoName: string) {
-  return demoLinks[normalizeProjectName(repoName)];
+  const mappedDemoUrl = demoLinks[normalizeProjectName(repoName)];
+  if (mappedDemoUrl) {
+    return mappedDemoUrl;
+  }
+
+  const vercelSlug = repoNameToVercelSlug(repoName);
+  if (!vercelSlug) {
+    return undefined;
+  }
+
+  return `https://${vercelSlug}.vercel.app/`;
 }
 
 function getGithubUrl(repoName: string, fallbackUrl: string) {
