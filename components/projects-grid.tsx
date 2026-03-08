@@ -21,6 +21,8 @@ const demoLinks: Record<string, string> = {
   sepvanced: "https://sep-vanced.github.io/Sep-Vanced/",
   sepvancedv2: "https://sep-vanced-v2.vercel.app/",
   sepvancedv3: "https://sep-vanced-v3.vercel.app/",
+  researchrepositorysystem: "https://research-repository-system.vercel.app/",
+  advanceprojectflow: "https://advance-project-flow.vercel.app/",
 };
 
 const githubLinks: Record<string, string> = {
