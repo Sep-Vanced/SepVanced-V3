@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Star } from "lucide-react";
+import { ExternalLink, Star, Funnel } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import type { Repo } from "@/lib/github";
@@ -9,6 +11,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 type ProjectsGridProps = {
   repos: Repo[];
+  maxItems?: number;
+  showViewMore?: boolean;
+  title?: string;
+  sectionId?: string;
+  showFrameworkFilters?: boolean;
 };
 
 const demoLinks: Record<string, string> = {
@@ -34,6 +41,37 @@ const projectDescriptions: Record<string, string> = {
 };
 
 const hiddenProjects = new Set(["pgoto"]);
+
+const projectFrameworks: Record<string, string[]> = {
+  studyplanner: ["Next.js", "TypeScript"],
+  insightflow: ["Next.js", "TypeScript"],
+  weatherapp: ["React", "JavaScript"],
+  qrcodereader: ["Next.js", "TypeScript"],
+  typingspeedtester: ["React", "JavaScript"],
+  medcount: ["Next.js", "TypeScript"],
+  sepvanced: ["HTML/CSS", "JavaScript"],
+  sepvancedv2: ["Next.js", "TypeScript"],
+  sepvancedv3: ["Next.js", "TypeScript"],
+  researchrepositorysystem: ["Laravel", "PHP", "MySQL"],
+  advanceprojectflow: ["Next.js", "TypeScript"],
+};
+
+const frameworkOrder = [
+  "Next.js",
+  "React",
+  "TypeScript",
+  "JavaScript",
+  "Laravel",
+  "PHP",
+  "Node.js",
+  "Express",
+  "MySQL",
+  "PostgreSQL",
+  "MongoDB",
+  "Vue",
+  "Flutter",
+  "HTML/CSS",
+];
 
 function normalizeProjectName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -73,25 +111,115 @@ function getDescription(repoName: string, fallbackDescription: string | null) {
   );
 }
 
-export function ProjectsGrid({ repos }: ProjectsGridProps) {
+function detectFrameworks(repo: Repo) {
+  const normalized = normalizeProjectName(repo.name);
+  const mapped = projectFrameworks[normalized] ?? [];
+  const text = `${repo.name} ${repo.description ?? ""} ${repo.language ?? ""}`.toLowerCase();
+  const detected = new Set<string>(mapped);
+
+  if (/\bnext\b/.test(text)) detected.add("Next.js");
+  if (/\breact\b/.test(text)) detected.add("React");
+  if (/\btypescript\b|^\s*ts\s*$/.test(text)) detected.add("TypeScript");
+  if (/\bjavascript\b/.test(text)) detected.add("JavaScript");
+  if (/\blaravel\b/.test(text)) detected.add("Laravel");
+  if (/\bphp\b/.test(text)) detected.add("PHP");
+  if (/\bnode\b/.test(text)) detected.add("Node.js");
+  if (/\bexpress\b/.test(text)) detected.add("Express");
+  if (/\bmysql\b/.test(text)) detected.add("MySQL");
+  if (/\bpostgres|postgresql\b/.test(text)) detected.add("PostgreSQL");
+  if (/\bmongo|mongodb\b/.test(text)) detected.add("MongoDB");
+  if (/\bvue\b/.test(text)) detected.add("Vue");
+  if (/\bflutter\b/.test(text)) detected.add("Flutter");
+  if (/\bhtml\b|\bcss\b/.test(text)) detected.add("HTML/CSS");
+
+  return Array.from(detected);
+}
+
+export function ProjectsGrid({
+  repos,
+  maxItems,
+  showViewMore = false,
+  title = "<Projects />",
+  sectionId = "projects",
+  showFrameworkFilters = false,
+}: ProjectsGridProps) {
   const visibleRepos = repos
     .filter((repo) => !hiddenProjects.has(normalizeProjectName(repo.name)))
     .filter((repo, index, allRepos) => {
       const normalized = normalizeProjectName(repo.name);
       return index === allRepos.findIndex((item) => normalizeProjectName(item.name) === normalized);
     });
+  const reposWithFrameworks = useMemo(
+    () => visibleRepos.map((repo) => ({ repo, frameworks: detectFrameworks(repo) })),
+    [visibleRepos],
+  );
+  const frameworkFilters = useMemo(() => {
+    const uniqueFrameworks = new Set<string>();
+    reposWithFrameworks.forEach(({ frameworks }) => {
+      frameworks.forEach((framework) => uniqueFrameworks.add(framework));
+    });
+
+    const sorted = Array.from(uniqueFrameworks).sort((a, b) => {
+      const indexA = frameworkOrder.indexOf(a);
+      const indexB = frameworkOrder.indexOf(b);
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+
+    return ["All", ...sorted];
+  }, [reposWithFrameworks]);
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const filteredRepos =
+    !showFrameworkFilters || activeFilter === "All"
+      ? visibleRepos
+      : reposWithFrameworks
+          .filter(({ frameworks }) => frameworks.includes(activeFilter))
+          .map(({ repo }) => repo);
+
+  const displayedRepos = typeof maxItems === "number" ? filteredRepos.slice(0, maxItems) : filteredRepos;
 
   return (
-    <section id="projects" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+    <section id={sectionId} className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.4 }}
-        className="mb-7 font-mono text-2xl font-semibold text-accent sm:text-3xl"
+        className="mb-5 font-mono text-xl font-semibold text-accent sm:mb-7 sm:text-3xl"
       >
-        {"<Projects />"}
+        {title}
       </motion.h2>
+
+      {showFrameworkFilters && frameworkFilters.length > 1 ? (
+        <div className="scrollbar-terminal mb-5 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto rounded-xl border border-border/70 bg-card/65 p-2 sm:mb-6">
+          <span
+            aria-hidden
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-background/55 text-muted-foreground"
+          >
+            <Funnel className="h-4 w-4" />
+          </span>
+          {frameworkFilters.map((framework) => {
+            const isActive = activeFilter === framework;
+            return (
+              <button
+                key={framework}
+                type="button"
+                onClick={() => setActiveFilter(framework)}
+                className={`shrink-0 snap-start rounded-lg border px-3.5 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${
+                  isActive
+                    ? "border-[var(--accent)] bg-accent text-[#eef3ff]"
+                    : "border-border/70 bg-background/50 text-foreground/85 hover:border-accent/45 hover:text-accent"
+                }`}
+              >
+                {framework}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       {visibleRepos.length === 0 ? (
         <Card className="border-border/70 bg-card/60">
@@ -99,9 +227,15 @@ export function ProjectsGrid({ repos }: ProjectsGridProps) {
             Unable to load repositories right now. Please try again later.
           </CardContent>
         </Card>
+      ) : displayedRepos.length === 0 ? (
+        <Card className="border-border/70 bg-card/60">
+          <CardContent className="pt-1 text-sm text-muted-foreground">
+            No projects found for this framework yet.
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {visibleRepos.map((repo, index) => (
+          {displayedRepos.map((repo, index) => (
             <motion.article
               key={repo.id}
               initial={{ opacity: 0, y: 14 }}
@@ -114,9 +248,9 @@ export function ProjectsGrid({ repos }: ProjectsGridProps) {
                 const demoUrl = getDemoUrl(repo.name);
                 const githubUrl = getGithubUrl(repo.name, repo.htmlUrl);
                 return (
-              <Card className="card-glow h-full justify-between border-border/70 bg-card/75 transition">
+              <Card className="card-glow h-full justify-between rounded-2xl border-border/70 bg-card/75 transition">
                 <CardHeader>
-                  <CardTitle className="line-clamp-1 text-lg text-foreground">{repo.name}</CardTitle>
+                  <CardTitle className="line-clamp-1 text-base text-foreground sm:text-lg">{repo.name}</CardTitle>
                   <CardDescription className="line-clamp-2 min-h-10 text-sm text-muted-foreground">
                     {getDescription(repo.name, repo.description)}
                   </CardDescription>
@@ -153,6 +287,14 @@ export function ProjectsGrid({ repos }: ProjectsGridProps) {
           ))}
         </div>
       )}
+
+      {showViewMore && filteredRepos.length > (maxItems ?? 0) ? (
+        <div className="mt-6 flex justify-center">
+          <Button asChild size="lg" variant="outline">
+            <Link href="/projects">View More Projects</Link>
+          </Button>
+        </div>
+      ) : null}
     </section>
   );
 }

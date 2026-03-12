@@ -40,6 +40,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-space-grotesk), sans-serif;
   min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 * {
@@ -48,6 +50,10 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 88px;
 }
 
 .dev-bg {
@@ -106,4 +112,18 @@ html {
 .scrollbar-terminal::-webkit-scrollbar-thumb {
   background: rgb(68 102 224 / 0.45);
   border-radius: 999px;
+}
+
+@media (max-width: 767px) {
+  .dev-bg::before {
+    background-size: 28px 28px;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 12px rgb(63 102 224 / 0.24);
+  }
+
+  .card-glow:hover {
+    box-shadow: none;
+  }
 }

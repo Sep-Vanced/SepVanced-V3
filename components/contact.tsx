@@ -14,13 +14,13 @@ const contacts = [
 
 export function Contact() {
   return (
-    <section id="contact" className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+    <section id="contact" className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.4 }}
-        className="mb-7 font-mono text-2xl font-semibold text-accent sm:text-3xl"
+        className="mb-5 font-mono text-xl font-semibold text-accent sm:mb-7 sm:text-3xl"
       >
         {"<Contact />"}
       </motion.h2>
@@ -31,13 +31,13 @@ export function Contact() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.45 }}
       >
-        <Card className="border-border/70 bg-card/85">
+        <Card className="rounded-2xl border-border/70 bg-card/85">
           <CardHeader>
             <CardTitle className="font-mono text-accent">
               {`const contact = {`}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 font-mono text-sm text-foreground/95">
+          <CardContent className="space-y-3.5 font-mono text-sm text-foreground/95 sm:space-y-4">
             {contacts.map((contact) => {
               const Icon = contact.icon;
               return (
@@ -46,7 +46,7 @@ export function Contact() {
                   href={contact.href}
                   target={contact.href.startsWith("http") ? "_blank" : undefined}
                   rel={contact.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="group flex flex-col items-start gap-1 rounded-md border border-border/70 bg-card/60 px-4 py-3 transition hover:border-accent/45 hover:bg-accent/10 sm:flex-row sm:items-center sm:justify-between"
+                  className="group flex flex-col items-start gap-1.5 rounded-xl border border-border/70 bg-card/60 px-4 py-3 transition hover:border-accent/45 hover:bg-accent/10 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <span className="inline-flex items-center gap-2">
                     <Icon className="h-4 w-4 text-accent" />
@@ -59,7 +59,7 @@ export function Contact() {
               );
             })}
             <div className="pt-2">
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="h-11 w-full sm:w-auto">
                 <a href="/Mangubat_Joseph_Resume_v2.pdf" download>
                   <Download className="h-4 w-4" />
                   Download Resume

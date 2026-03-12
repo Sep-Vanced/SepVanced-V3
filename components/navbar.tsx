@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -13,24 +15,28 @@ const links = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const closeMobileMenu = () => setMobileOpen(false);
+  const isHomePage = pathname === "/";
+  const homeHref = isHomePage ? "#home" : "/#home";
+  const getSectionHref = (href: string) => (isHomePage ? href : `/${href}`);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/88 backdrop-blur-md">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-        <a href="#home" className="font-mono text-lg font-semibold tracking-tight text-accent sm:text-xl">
+        <Link href={homeHref} className="font-mono text-base font-semibold tracking-tight text-accent sm:text-xl">
           <span>{"<SepVanced/>"}</span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-3 md:flex">
           <ul className="flex items-center gap-4 text-sm text-foreground/80 sm:gap-6">
             {links.map((link) => (
               <li key={link.href}>
-                <a className="transition hover:text-accent" href={link.href}>
+                <Link className="transition hover:text-accent" href={getSectionHref(link.href)}>
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -43,7 +49,9 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-label="Toggle menu"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border/70 bg-card/40 text-foreground transition hover:border-[var(--accent)]/70 hover:bg-card"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav-sheet"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-border/70 bg-card/50 text-foreground transition hover:border-[var(--accent)]/70 hover:bg-card"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -52,27 +60,40 @@ export function Navbar() {
 
       <AnimatePresence>
         {mobileOpen ? (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="border-t border-border/70 bg-background/95 px-4 py-3 md:hidden"
-          >
-            <ul className="space-y-1">
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              onClick={closeMobileMenu}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              className="fixed inset-0 z-30 bg-black/45 md:hidden"
+            />
+            <motion.div
+              id="mobile-nav-sheet"
+              initial={{ opacity: 0, y: -14, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-x-3 top-[68px] z-40 rounded-2xl border border-border/70 bg-background/96 p-3 shadow-2xl shadow-black/40 md:hidden"
+            >
+            <ul className="space-y-1.5">
               {links.map((link) => (
                 <li key={link.href}>
-                  <a
-                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/85 transition hover:bg-card hover:text-accent"
-                    href={link.href}
+                  <Link
+                    className="block rounded-xl px-3 py-3 text-sm font-medium text-foreground/90 transition hover:bg-card hover:text-accent"
+                    href={getSectionHref(link.href)}
                     onClick={closeMobileMenu}
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+            </motion.div>
+          </>
         ) : null}
       </AnimatePresence>
     </header>

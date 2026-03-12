@@ -114,15 +114,15 @@ export function TechStack() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.25 }}
         transition={{ duration: 0.4 }}
-        className="rounded-2xl border border-border/70 bg-card/70 p-3 shadow-[0_8px_28px_rgba(9,21,58,0.2)] backdrop-blur-sm sm:rounded-3xl sm:p-6"
+        className="rounded-2xl border border-border/70 bg-card/70 p-2.5 shadow-[0_8px_28px_rgba(9,21,58,0.2)] backdrop-blur-sm sm:rounded-3xl sm:p-6"
       >
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3.5 sm:space-y-6">
           {stackGroups.map((group, groupIndex) => (
-            <div key={group.title}>
-              <h3 className="mb-2 font-mono text-base font-semibold text-accent sm:mb-3 sm:text-lg">
+            <div key={group.title} className="rounded-xl border border-border/60 bg-background/35 p-2.5 sm:rounded-2xl sm:p-4">
+              <h3 className="mb-2 font-mono text-sm font-semibold text-accent sm:mb-3 sm:text-lg">
                 {group.title}
               </h3>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
                 {group.items.map((item, itemIndex) => (
                   <motion.div
                     key={`${group.title}-${item.name}`}
@@ -130,12 +130,12 @@ export function TechStack() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 0.25, delay: groupIndex * 0.05 + itemIndex * 0.02 }}
-                    className="card-glow flex min-h-14 items-center gap-2 rounded-lg border border-border/70 bg-background/55 px-2.5 py-2.5 transition hover:border-accent/45 hover:bg-accent/10 sm:min-h-16 sm:gap-3 sm:rounded-xl sm:px-3 sm:py-3"
+                    className="card-glow flex min-h-12 items-center gap-2 rounded-lg border border-border/70 bg-background/55 px-2 py-2 transition hover:border-accent/45 hover:bg-accent/10 sm:min-h-16 sm:gap-3 sm:rounded-xl sm:px-3 sm:py-3"
                   >
-                    <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border/70 bg-card/85 p-1 sm:h-7 sm:w-7">
+                    <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-border/70 bg-card/85 p-1 sm:h-7 sm:w-7">
                       <item.icon className={`h-full w-full ${item.iconClassName ?? "text-foreground"}`} />
                     </span>
-                    <span className="text-sm font-semibold leading-tight text-foreground/90 sm:text-base lg:text-lg">
+                    <span className="text-xs font-semibold leading-tight text-foreground/90 sm:text-base lg:text-lg">
                       {item.name}
                     </span>
                   </motion.div>

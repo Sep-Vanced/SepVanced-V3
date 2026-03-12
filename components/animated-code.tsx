@@ -78,9 +78,9 @@ export function AnimatedCode() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      className="overflow-hidden rounded-lg border border-white/12 bg-[#091327]/88 shadow-2xl shadow-blue-950/40"
+      className="max-w-full overflow-hidden rounded-2xl border border-white/12 bg-[#091327]/88 shadow-2xl shadow-blue-950/40"
     >
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-center gap-2">
           <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
@@ -90,11 +90,11 @@ export function AnimatedCode() {
       </div>
 
       <div className="scrollbar-terminal overflow-x-auto p-3 sm:p-4">
-        <pre className="min-w-[520px] font-mono text-xs leading-6 text-slate-200 sm:min-w-[640px] sm:text-sm sm:leading-7">
+        <pre className="min-w-0 whitespace-pre-wrap break-words font-mono text-[11px] leading-5 text-slate-200 sm:min-w-[640px] sm:whitespace-pre sm:text-sm sm:leading-7">
           <code>{renderHighlightedCode(displayText)}</code>
           <span
             className={cn(
-              "ml-0.5 inline-block h-5 w-2 translate-y-1 bg-blue-300",
+              "ml-0.5 inline-block h-4 w-1.5 translate-y-0.5 bg-blue-300 sm:h-5 sm:w-2 sm:translate-y-1",
               showCursor ? "opacity-100" : "opacity-0",
             )}
           />

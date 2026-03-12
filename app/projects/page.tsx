@@ -1,14 +1,9 @@
-import { About } from "@/components/about";
-import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
-import { Hero } from "@/components/hero";
 import { Navbar } from "@/components/navbar";
 import { ProjectsGrid } from "@/components/projects-grid";
-import { ScrollProgress } from "@/components/scroll-progress";
-import { TechStack } from "@/components/techstack";
 import { getGithubRepos, type Repo } from "@/lib/github";
 
-export default async function Home() {
+export default async function ProjectsPage() {
   let repos: Repo[] = [];
 
   try {
@@ -19,14 +14,9 @@ export default async function Home() {
 
   return (
     <div className="dev-bg flex min-h-screen flex-col">
-      <ScrollProgress />
       <Navbar />
       <main className="flex-1">
-        <Hero />
-        <ProjectsGrid repos={repos} maxItems={3} showViewMore />
-        <TechStack />
-        <About />
-        <Contact />
+        <ProjectsGrid repos={repos} title="<All Projects />" sectionId="all-projects" showFrameworkFilters />
       </main>
       <Footer />
     </div>
