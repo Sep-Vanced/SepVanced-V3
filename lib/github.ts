@@ -3,6 +3,7 @@ export type Repo = {
   name: string;
   description: string | null;
   language: string | null;
+  topics: string[];
   stargazersCount: number;
   htmlUrl: string;
   updatedAt: string;
@@ -14,6 +15,7 @@ type GithubRepoResponse = {
   name: string;
   description: string | null;
   language: string | null;
+  topics?: string[];
   stargazers_count: number;
   html_url: string;
   updated_at: string;
@@ -44,6 +46,7 @@ export async function getGithubRepos(username: string): Promise<Repo[]> {
       name: repo.name,
       description: repo.description,
       language: repo.language,
+      topics: Array.isArray(repo.topics) ? repo.topics : [],
       stargazersCount: repo.stargazers_count,
       htmlUrl: repo.html_url,
       updatedAt: repo.updated_at,

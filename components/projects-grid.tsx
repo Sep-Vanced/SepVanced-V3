@@ -42,35 +42,16 @@ const projectDescriptions: Record<string, string> = {
 
 const hiddenProjects = new Set(["pgoto"]);
 
-const projectFrameworks: Record<string, string[]> = {
-  studyplanner: ["Next.js", "TypeScript"],
-  insightflow: ["Next.js", "TypeScript"],
-  weatherapp: ["React", "JavaScript"],
-  qrcodereader: ["Next.js", "TypeScript"],
-  typingspeedtester: ["React", "JavaScript"],
-  medcount: ["Next.js", "TypeScript"],
-  sepvanced: ["HTML/CSS", "JavaScript"],
-  sepvancedv2: ["Next.js", "TypeScript"],
-  sepvancedv3: ["Next.js", "TypeScript"],
-  researchrepositorysystem: ["Laravel", "PHP", "MySQL"],
-  advanceprojectflow: ["Next.js", "TypeScript"],
-};
-
-const frameworkOrder = [
-  "Next.js",
-  "React",
+const languageOrder = [
   "TypeScript",
   "JavaScript",
-  "Laravel",
   "PHP",
-  "Node.js",
-  "Express",
-  "MySQL",
-  "PostgreSQL",
-  "MongoDB",
-  "Vue",
-  "Flutter",
-  "HTML/CSS",
+  "Python",
+  "Java",
+  "C++",
+  "HTML",
+  "CSS",
+  "Unknown",
 ];
 
 function normalizeProjectName(name: string) {
@@ -111,28 +92,8 @@ function getDescription(repoName: string, fallbackDescription: string | null) {
   );
 }
 
-function detectFrameworks(repo: Repo) {
-  const normalized = normalizeProjectName(repo.name);
-  const mapped = projectFrameworks[normalized] ?? [];
-  const text = `${repo.name} ${repo.description ?? ""} ${repo.language ?? ""}`.toLowerCase();
-  const detected = new Set<string>(mapped);
-
-  if (/\bnext\b/.test(text)) detected.add("Next.js");
-  if (/\breact\b/.test(text)) detected.add("React");
-  if (/\btypescript\b|^\s*ts\s*$/.test(text)) detected.add("TypeScript");
-  if (/\bjavascript\b/.test(text)) detected.add("JavaScript");
-  if (/\blaravel\b/.test(text)) detected.add("Laravel");
-  if (/\bphp\b/.test(text)) detected.add("PHP");
-  if (/\bnode\b/.test(text)) detected.add("Node.js");
-  if (/\bexpress\b/.test(text)) detected.add("Express");
-  if (/\bmysql\b/.test(text)) detected.add("MySQL");
-  if (/\bpostgres|postgresql\b/.test(text)) detected.add("PostgreSQL");
-  if (/\bmongo|mongodb\b/.test(text)) detected.add("MongoDB");
-  if (/\bvue\b/.test(text)) detected.add("Vue");
-  if (/\bflutter\b/.test(text)) detected.add("Flutter");
-  if (/\bhtml\b|\bcss\b/.test(text)) detected.add("HTML/CSS");
-
-  return Array.from(detected);
+function getRepoLanguages(repo: Repo) {
+  return [repo.language?.trim() || "Unknown"];
 }
 
 export function ProjectsGrid({
@@ -150,7 +111,7 @@ export function ProjectsGrid({
       return index === allRepos.findIndex((item) => normalizeProjectName(item.name) === normalized);
     });
   const reposWithFrameworks = useMemo(
-    () => visibleRepos.map((repo) => ({ repo, frameworks: detectFrameworks(repo) })),
+    () => visibleRepos.map((repo) => ({ repo, frameworks: getRepoLanguages(repo) })),
     [visibleRepos],
   );
   const frameworkFilters = useMemo(() => {
@@ -160,8 +121,8 @@ export function ProjectsGrid({
     });
 
     const sorted = Array.from(uniqueFrameworks).sort((a, b) => {
-      const indexA = frameworkOrder.indexOf(a);
-      const indexB = frameworkOrder.indexOf(b);
+      const indexA = languageOrder.indexOf(a);
+      const indexB = languageOrder.indexOf(b);
       if (indexA === -1 && indexB === -1) return a.localeCompare(b);
       if (indexA === -1) return 1;
       if (indexB === -1) return -1;
@@ -194,7 +155,7 @@ export function ProjectsGrid({
       </motion.h2>
 
       {showFrameworkFilters && frameworkFilters.length > 1 ? (
-        <div className="scrollbar-terminal mb-5 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto rounded-xl border border-border/70 bg-card/65 p-2 sm:mb-6">
+        <div className="scrollbar-terminal mb-5 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto rounded-xl border border-border/70 bg-card/65 p-2 sm:mb-6 sm:justify-center">
           <span
             aria-hidden
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-background/55 text-muted-foreground"
