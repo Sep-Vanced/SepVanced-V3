@@ -8,7 +8,7 @@ import { useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
-  { label: "Projects", href: "#projects" },
+  { label: "Projects", href: "#projects", pageHref: "/projects" },
   { label: "Tech Stack", href: "#techstack" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
@@ -21,7 +21,10 @@ export function Navbar() {
   const closeMobileMenu = () => setMobileOpen(false);
   const isHomePage = pathname === "/";
   const homeHref = isHomePage ? "#home" : "/#home";
-  const getSectionHref = (href: string) => (isHomePage ? href : `/${href}`);
+  const getSectionHref = (href: string, pageHref?: string) => {
+    if (pageHref) return pageHref;
+    return isHomePage ? href : `/${href}`;
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/88 backdrop-blur-md">
@@ -34,7 +37,7 @@ export function Navbar() {
           <ul className="flex items-center gap-4 text-sm text-foreground/80 sm:gap-6">
             {links.map((link) => (
               <li key={link.href}>
-                <Link className="transition hover:text-accent" href={getSectionHref(link.href)}>
+                <Link className="transition hover:text-accent" href={getSectionHref(link.href, link.pageHref)}>
                   {link.label}
                 </Link>
               </li>
@@ -84,7 +87,7 @@ export function Navbar() {
                 <li key={link.href}>
                   <Link
                     className="block rounded-xl px-3 py-3 text-sm font-medium text-foreground/90 transition hover:bg-card hover:text-accent"
-                    href={getSectionHref(link.href)}
+                    href={getSectionHref(link.href, link.pageHref)}
                     onClick={closeMobileMenu}
                   >
                     {link.label}
