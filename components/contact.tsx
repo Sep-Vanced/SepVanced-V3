@@ -60,7 +60,7 @@ export function Contact() {
             })}
             <div className="pt-2">
               <Button asChild variant="outline" className="h-11 w-full sm:w-auto">
-                <a href="/Mangubat_Joseph_Resume_v2.pdf" download>
+                <a href="/Mangubat_Joseph_Resume_v3.pdf" download>
                   <Download className="h-4 w-4" />
                   Download Resume
                 </a>
