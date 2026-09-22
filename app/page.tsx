@@ -7,6 +7,7 @@ import { ProjectsGrid } from "@/components/projects-grid";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { TechStack } from "@/components/techstack";
 import { getGithubRepos, type Repo } from "@/lib/github";
+import { Experience } from "@/components/experience";
 
 export default async function Home() {
   let repos: Repo[] = [];
@@ -25,6 +26,7 @@ export default async function Home() {
         <Hero />
         <ProjectsGrid repos={repos} maxItems={3} showViewMore />
         <TechStack />
+        <Experience />
         <About />
         <Contact />
       </main>
